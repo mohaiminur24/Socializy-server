@@ -1,8 +1,8 @@
-const express = require('express');
+const express = require("express");
 const app = express();
-const cors = require('cors');
+const cors = require("cors");
 require("dotenv").config();
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion } = require("mongodb");
 const PORT = process.env.PORT || 5000;
 
 app.use(cors());
@@ -17,7 +17,7 @@ const client = new MongoClient(uri, {
     version: ServerApiVersion.v1,
     strict: true,
     deprecationErrors: true,
-  }
+  },
 });
 
 async function run() {
@@ -26,29 +26,33 @@ async function run() {
     await client.connect();
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
-    console.log("Pinged your deployment. You successfully connected to MongoDB!");
-
+    console.log(
+      "Pinged your deployment. You successfully connected to MongoDB!"
+    );
 
     const database = client.db("Socializy");
-    const datapost = database.collection('post');
+    const datapost = database.collection("post");
 
+    // get all post route is here
+    app.get("/getallpost", async (req, res) => {
+      try {
+        const result = await datapost.find().toArray();
+        res.send(result);
+      } catch (error) {
+        console.log("get all post route is not wokring!");
+      }
+    });
 
-    app.post("/postdatainsert", async(req,res)=>{
-        try {
-            const data = req.body;
-            const result = await datapost.insertOne(data);
-            res.send(result);
-        } catch (error) {
-            console.log('new user post route is not working!')
-        }
-    })
-
-
-
-
-
-
-
+    // new post route is here
+    app.post("/postdatainsert", async (req, res) => {
+      try {
+        const data = req.body;
+        const result = await datapost.insertOne(data);
+        res.send(result);
+      } catch (error) {
+        console.log("new user post route is not working!");
+      }
+    });
   } finally {
     // Ensures that the client will close when you finish/error
     // await client.close();
@@ -56,14 +60,11 @@ async function run() {
 }
 run().catch(console.dir);
 
-
 // Default Home route is here
-app.get('/',(req,res)=>{
-    res.send('Socializy server is running well!');
-})
+app.get("/", (req, res) => {
+  res.send("Socializy server is running well!");
+});
 
-
-
-app.listen(PORT,()=>{
-    console.log(`Socializy server is running with ${PORT}`);
-})
+app.listen(PORT, () => {
+  console.log(`Socializy server is running with ${PORT}`);
+});
