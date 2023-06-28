@@ -60,8 +60,8 @@ async function run() {
         const info = req.body;
         const query = {_id: new ObjectId(info.postid)};
         const update = {
-            $set:{
-              likes: [info.email]
+            $addToSet:{
+              likes: info.email
             }
         };
         const result = await datapost.updateOne(query,update);
@@ -70,7 +70,25 @@ async function run() {
       } catch (error) {
         console.log('post insert like button route is not working!')
       }
+    });
+
+    // handle unlike post button
+    app.delete('/unlikepostbutton', async(req,res)=>{
+      try {
+        const info = req.body;
+        const query = {_id: new ObjectId(info.postid)};
+        const deleted = {
+          $pull:{
+            likes: info.email
+          }
+        }
+        const result =await datapost.updateOne(query,deleted);
+        res.send(result);
+      } catch (error) {
+        console.log('post unlike button is not working!')
+      }
     })
+
 
 
 
