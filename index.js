@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 require("dotenv").config();
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const PORT = process.env.PORT || 5000;
 
 app.use(cors());
@@ -53,6 +53,31 @@ async function run() {
         console.log("new user post route is not working!");
       }
     });
+
+    // handle like button route is here
+    app.patch('/handlepostlikebutton',async(req,res)=>{
+      try {
+        const info = req.body;
+        const query = {_id: new ObjectId(info.postid)};
+        const update = {
+            $set:{
+              likes: [info.email]
+            }
+        };
+        const result = await datapost.updateOne(query,update);
+        res.send(result);
+
+      } catch (error) {
+        console.log('post insert like button route is not working!')
+      }
+    })
+
+
+
+
+
+
+
   } finally {
     // Ensures that the client will close when you finish/error
     // await client.close();
