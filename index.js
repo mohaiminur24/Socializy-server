@@ -32,6 +32,7 @@ async function run() {
 
     const database = client.db("Socializy");
     const datapost = database.collection("post");
+    const productData = database.collection("product");
 
     // get all post route is here
     app.get("/getallpost", async (req, res) => {
@@ -43,6 +44,17 @@ async function run() {
       }
     });
 
+    // geruserproduct route is here
+    app.get('/getuserproduct',async(req, res)=>{
+      try {
+        const email = req.query.email;
+        const result = await productData.find({user: email}).toArray();
+        res.send(result);
+      } catch (error) {
+        console.log('get user product route is not working!')
+      }
+    })
+
     // new post route is here
     app.post("/postdatainsert", async (req, res) => {
       try {
@@ -53,6 +65,16 @@ async function run() {
         console.log("new user post route is not working!");
       }
     });
+
+    app.post('/newitemscreate',async(req,res)=>{
+      try {
+        const items = req.body;
+        const result = await productData.insertOne(items);
+        res.send(result);
+      } catch (error) {
+        console.log('create new items route is not working!')
+      }
+    })
 
     // handle like button route is here
     app.patch('/handlepostlikebutton',async(req,res)=>{
