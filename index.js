@@ -44,6 +44,16 @@ async function run() {
       }
     });
 
+    // get all product route is here
+    app.get('/getallproduct', async(req,res)=>{
+      try {
+        const result = await productData.find().toArray();
+        res.send(result);
+      } catch (error) {
+        console.log('get all product data is not working!')
+      }
+    })
+
     // geruserproduct route is here
     app.get('/getuserproduct',async(req, res)=>{
       try {
